@@ -1,0 +1,19 @@
+{
+  "name": "sapp",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "dependencies": {
+    "react": "latest",
+    "react-dom": "latest",
+    "react-scripts": "latest",
+    "react-router-dom": "latest",
+    "redux": "latest",
+    "query-string": "latest",
+    "@material-ui/core": "latest",
+    "@material-ui/icons": "latest",
+    "html-react-parser": "latest"
+  }
+}

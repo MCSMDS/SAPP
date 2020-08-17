@@ -1,0 +1,46 @@
+name: SAPP CI
+
+on:
+  push:
+    branches:
+      master
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+
+      - name: Cache
+        uses: actions/cache@v2.1.0
+        id: cache
+        with:
+          path: |
+            ~/.npm
+            build
+            node_modules
+            package-lock.json
+          key: SAPP-${{ hashFiles('package.json') }}
+
+      - name: Install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm i
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3.6.4
+        with:
+          keep_files: true
+          publish_dir: build
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: Deploy
+#        uses: peaceiris/actions-gh-pages@v3.6.4
+#        with:
+#          publish_dir: node_modules/react-redux
+#          publish_branch: node_modules
+#          github_token: ${{ secrets.GITHUB_TOKEN }}

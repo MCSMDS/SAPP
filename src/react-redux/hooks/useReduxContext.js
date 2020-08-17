@@ -1,3 +1,2 @@
-import { useContext } from 'react'
-import ReactReduxContext from '../components/Context'
-export const useReduxContext = () => useContext(ReactReduxContext);
+import React,{ useContext } from 'react'
+export const useReduxContext = () => useContext(React.createContext(null));

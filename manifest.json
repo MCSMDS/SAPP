@@ -1,0 +1,17 @@
+{
+  "short_name": "SAPP",
+  "name": "School APP",
+  "description": "It is School APP.",
+  "icons": [
+    {
+      "src": "/android-icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/?pwa",
+  "background_color": "#fff",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#fff"
+}

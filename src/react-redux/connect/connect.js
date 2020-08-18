@@ -1,7 +1,6 @@
 import connectAdvanced from '../components/connectAdvanced'
 import shallowEqual from '../utils/shallowEqual'
 import defaultMapDispatchToPropsFactories from './mapDispatchToProps'
-import defaultMapStateToPropsFactories from './mapStateToProps'
 import defaultMergePropsFactories from './mergeProps'
 import defaultSelectorFactory from './selectorFactory'
 
@@ -37,6 +36,7 @@ function wrapMapToPropsFunc(mapToProps) {
     return proxy
   }
 }
+
 export default function connect(mapStateToProps, mapDispatchToProps) {
   console.log(match(mapDispatchToProps, defaultMapDispatchToPropsFactories))
   console.log(match(undefined, defaultMergePropsFactories))

@@ -1,5 +1,4 @@
 import connectAdvanced from '../components/connectAdvanced'
-import shallowEqual from '../utils/shallowEqual'
 import defaultSelectorFactory from './selectorFactory'
 
 const whenMergePropsIsOmitted = () => function defaultMergeProps(stateProps, dispatchProps, ownProps) {
@@ -36,11 +35,6 @@ export default function connect(mapStateToProps, mapDispatchToProps) {
     shouldHandleStateChanges: Boolean(mapStateToProps),
     initMapStateToProps: wrapMapToPropsFunc(mapStateToProps),
     initMapDispatchToProps: wrapMapToPropsFunc(mapDispatchToProps),
-    initMergeProps: whenMergePropsIsOmitted,
-    pure: true,
-    areStatesEqual: (a, b) => a === b,
-    areOwnPropsEqual: shallowEqual,
-    areStatePropsEqual: shallowEqual,
-    areMergedPropsEqual: shallowEqual
+    initMergeProps: whenMergePropsIsOmitted
   })
 }

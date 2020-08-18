@@ -70,7 +70,7 @@ export default function connectAdvanced(selectorFactory, { shouldHandleStateChan
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
     const displayName = (name => `Connect(${name})`)(wrappedComponentName)
     const selectorFactoryOptions = { ...connectOptions, getDisplayName: name => `Connect(${name})`, methodName: 'connect', renderCountProp: undefined, shouldHandleStateChanges, storeKey: 'store', displayName, wrappedComponentName, WrappedComponent }
-    const { pure } = connectOptions
+    const pure = true
     function createChildSelector(store) {
       return selectorFactory(store.dispatch, selectorFactoryOptions)
     }

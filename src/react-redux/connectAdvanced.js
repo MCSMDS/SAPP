@@ -8,7 +8,9 @@ import selectorFactory from './selectorFactory'
 
 const EMPTY_ARRAY = []
 
-const storeStateUpdatesReducer = (state, action) => [action.payload, state[1] + 1]
+function storeStateUpdatesReducer(state, action) {
+  return [action.payload, state[1] + 1]
+}
 
 function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
   useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])
@@ -59,12 +61,15 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
   return unsubscribeWrapper
 }
 
+const initStateUpdates = () => [null, 0]
+
 export default function connectAdvanced(connectOptions) {
   const Context = ReactReduxContext
   return function wrapWithConnect(WrappedComponent) {
-    console.log(WrappedComponent)
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
     const displayName = (name => `Connect(${name})`)(wrappedComponentName)
+    const pure = true
+    const usePureOnlyMemo = pure ? useMemo : callback => callback()
 
     function ConnectFunction(props) {
       const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
@@ -93,14 +98,14 @@ export default function connectAdvanced(connectOptions) {
         return { ...contextValue, subscription }
       }, [didStoreComeFromProps, contextValue, subscription])
 
-      const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, EMPTY_ARRAY, () => [null, 0])
+      const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, EMPTY_ARRAY, initStateUpdates)
       if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
       const lastChildProps = useRef()
       const lastWrapperProps = useRef(wrapperProps)
       const childPropsFromStoreUpdate = useRef()
       const renderIsScheduled = useRef(false)
 
-      const actualChildProps = useMemo(() => {
+      const actualChildProps = usePureOnlyMemo(() => {
         if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
           return childPropsFromStoreUpdate.current
         }
@@ -123,7 +128,7 @@ export default function connectAdvanced(connectOptions) {
 
     }
 
-    const Connect = React.memo(ConnectFunction)
+    const Connect = pure ? React.memo(ConnectFunction) : ConnectFunction
     Connect.WrappedComponent = WrappedComponent
     Connect.displayName = displayName
     return hoistStatics(Connect, WrappedComponent)

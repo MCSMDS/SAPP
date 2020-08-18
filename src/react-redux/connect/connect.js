@@ -10,9 +10,7 @@ function match(arg, factories, name) {
     const result = factories[i](arg)
     if (result) return result
   }
-  return (dispatch, options) => {
-    throw new Error(`Invalid value of type ${typeof arg} for ${name} argument when connecting component ${options.wrappedComponentName}.`)
-  }
+  return () => { throw new Error(``) }
 }
 
 const strictEqual = (a, b) => a === b

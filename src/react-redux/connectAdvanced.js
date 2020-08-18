@@ -105,7 +105,7 @@ export default function connectAdvanced(connectOptions) {
           return childPropsFromStoreUpdate.current
         }
         return childPropsSelector(store.getState(), wrapperProps)
-      }, [store, previousStateUpdateResult, wrapperProps])
+      }, [store, previousStateUpdateResult, wrapperProps, childPropsSelector])
 
       useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
         [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]

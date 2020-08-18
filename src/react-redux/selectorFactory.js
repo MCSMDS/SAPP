@@ -1,4 +1,4 @@
-function pureFinalPropsSelectorFactory({ mapStateToProps, mapDispatchToProps, mergeProps }, dispatch) {
+export default function ({ mapStateToProps, mapDispatchToProps, mergeProps }, dispatch) {
 
   function is(x, y) {
     if (x === y) {
@@ -70,9 +70,5 @@ function pureFinalPropsSelectorFactory({ mapStateToProps, mapDispatchToProps, me
     return mergedProps
   }
 
-  return function pureFinalPropsSelector(nextState, nextOwnProps) {
-    return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps)
-  }
+  return (nextState, nextOwnProps) => hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps)
 }
-
-export default (porps, dispatch) => pureFinalPropsSelectorFactory(porps, dispatch)

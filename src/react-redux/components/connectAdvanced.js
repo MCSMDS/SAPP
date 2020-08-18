@@ -69,24 +69,14 @@ function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPr
 
 const initStateUpdates = () => [null, 0]
 
-export default function connectAdvanced(selectorFactory, {
-  getDisplayName = name => `ConnectAdvanced(${name})`,
-  methodName = 'connectAdvanced',
-  renderCountProp = undefined,
-  shouldHandleStateChanges = true,
-  storeKey = 'store',
-  withRef = false,
-  forwardRef = false,
-  context = ReactReduxContext,
-  ...connectOptions
-} = {}) {
+export default function connectAdvanced(selectorFactory, { shouldHandleStateChanges, ...connectOptions }) {
 
-  const Context = context
+  const Context = ReactReduxContext
 
   return function wrapWithConnect(WrappedComponent) {
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
-    const displayName = getDisplayName(wrappedComponentName)
-    const selectorFactoryOptions = { ...connectOptions, getDisplayName, methodName, renderCountProp, shouldHandleStateChanges, storeKey, displayName, wrappedComponentName, WrappedComponent }
+    const displayName = (name => `Connect(${name})`)(wrappedComponentName)
+    const selectorFactoryOptions = { ...connectOptions, getDisplayName: name => `Connect(${name})`, methodName: 'connect', renderCountProp: undefined, shouldHandleStateChanges, storeKey: 'store', displayName, wrappedComponentName, WrappedComponent }
     const { pure } = connectOptions
 
     function createChildSelector(store) {
@@ -173,15 +163,6 @@ export default function connectAdvanced(selectorFactory, {
 
     Connect.WrappedComponent = WrappedComponent
     Connect.displayName = displayName
-
-    if (forwardRef) {
-      const forwarded = React.forwardRef(function forwardConnectRef(props, ref) {
-        return <Connect {...props} reactReduxForwardedRef={ref} />
-      })
-      forwarded.displayName = displayName
-      forwarded.WrappedComponent = WrappedComponent
-      return hoistStatics(forwarded, WrappedComponent)
-    }
 
     return hoistStatics(Connect, WrappedComponent)
   }

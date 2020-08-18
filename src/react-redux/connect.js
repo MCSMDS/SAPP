@@ -22,19 +22,10 @@ function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled
 
 function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch) {
   let didUnsubscribe = false
-  let lastThrownError = null
   const checkForUpdates = () => {
     if (didUnsubscribe) return
     const latestStoreState = store.getState()
-    let newChildProps, error
-    try {
-      newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current)
-    } catch (e) {
-      console.log(e)
-      error = e
-      lastThrownError = e
-    }
-    if (!error) lastThrownError = null
+    let newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current)
     if (newChildProps === lastChildProps.current) {
       if (!renderIsScheduled.current) notifyNestedSubs()
     } else {
@@ -51,12 +42,11 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
     didUnsubscribe = true
     subscription.tryUnsubscribe()
     subscription.onStateChange = null
-    if (lastThrownError) throw lastThrownError
   }
   return unsubscribeWrapper
 }
 
-//const Context = ReactReduxContext
+
 
 export default function wrapWithConnect(WrappedComponent) {
   const usePureOnlyMemo = useMemo

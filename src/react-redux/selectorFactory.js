@@ -5,6 +5,7 @@ export default function pureFinalPropsSelectorFactory(dispatch) {
 
   function shallowEqual(objA, objB) {
     if (objA === objB) return true;
+    console.log(1)
     if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) return false;
     const keysA = Object.keys(objA);
     const keysB = Object.keys(objB);

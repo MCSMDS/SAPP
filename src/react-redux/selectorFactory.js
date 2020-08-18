@@ -31,7 +31,7 @@ export default function pureFinalPropsSelectorFactory(dispatch) {
     return proxy
   }
 
-  const wrapMapToPropsFunc1 = () => {
+  const wrapMapToPropsFunc2 = () => {
     const proxy = stateOrDispatch => proxy.mapToProps(stateOrDispatch)
     proxy.dependsOnOwnProps = true
     proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch) {
@@ -42,7 +42,7 @@ export default function pureFinalPropsSelectorFactory(dispatch) {
   }
 
   const mapStateToProps = wrapMapToPropsFunc1();
-  const mapDispatchToProps = wrapMapToPropsFunc1()
+  const mapDispatchToProps = wrapMapToPropsFunc2()
 
   function shallowEqual(objA, objB) {
     if (objA === objB) return true;

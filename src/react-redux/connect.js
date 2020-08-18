@@ -3,10 +3,8 @@ import React, { useContext, useMemo, useRef, useReducer } from 'react'
 import { isContextConsumer } from 'react-is'
 import Subscription from './Subscription'
 import { useLayoutEffect } from 'react'
-import ReactReduxContext from './Context'
+import Context from './Context'
 import selectorFactory from './selectorFactory'
-
-const storeStateUpdatesReducer = (state, action) => [action.payload, state[1] + 1]
 
 function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
   useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])
@@ -32,6 +30,7 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
     try {
       newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current)
     } catch (e) {
+      console.log(e)
       error = e
       lastThrownError = e
     }
@@ -57,7 +56,7 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
   return unsubscribeWrapper
 }
 
-const Context = ReactReduxContext
+//const Context = ReactReduxContext
 
 export default function wrapWithConnect(WrappedComponent) {
   const usePureOnlyMemo = useMemo
@@ -89,7 +88,7 @@ export default function wrapWithConnect(WrappedComponent) {
       return { ...contextValue, subscription }
     }, [didStoreComeFromProps, contextValue, subscription])
 
-    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, [], () => [null, 0])
+    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer((state, action) => [action.payload, state[1] + 1], [], () => [null, 0])
     if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
     const lastChildProps = useRef()
     const lastWrapperProps = useRef(wrapperProps)
@@ -97,9 +96,7 @@ export default function wrapWithConnect(WrappedComponent) {
     const renderIsScheduled = useRef(false)
 
     const actualChildProps = usePureOnlyMemo(() => {
-      if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
-        return childPropsFromStoreUpdate.current
-      }
+      if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) childPropsFromStoreUpdate.current
       return childPropsSelector(store.getState(), wrapperProps)
     }, [store, previousStateUpdateResult, wrapperProps])
 

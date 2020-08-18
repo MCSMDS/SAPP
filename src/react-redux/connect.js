@@ -96,7 +96,7 @@ export default function wrapWithConnect(WrappedComponent) {
     const renderIsScheduled = useRef(false)
 
     const actualChildProps = usePureOnlyMemo(() => {
-      if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) childPropsFromStoreUpdate.current
+      if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
       return childPropsSelector(store.getState(), wrapperProps)
     }, [store, previousStateUpdateResult, wrapperProps])
 

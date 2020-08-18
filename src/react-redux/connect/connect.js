@@ -1,15 +1,9 @@
 import connectAdvanced from '../components/connectAdvanced'
 import shallowEqual from '../utils/shallowEqual'
-import defaultMapDispatchToPropsFactories from './mapDispatchToProps'
-import defaultMergePropsFactories from './mergeProps'
 import defaultSelectorFactory from './selectorFactory'
 
-function match(arg, factories) {
-  for (let i = factories.length - 1; i >= 0; i--) {
-    const result = factories[i](arg)
-    if (result) return result
-  }
-  return () => { throw new Error(``) }
+const whenMergePropsIsOmitted = () => function defaultMergeProps(stateProps, dispatchProps, ownProps) {
+  return { ...ownProps, ...stateProps, ...dispatchProps }
 }
 
 function getDependsOnOwnProps(mapToProps) {
@@ -38,13 +32,11 @@ function wrapMapToPropsFunc(mapToProps) {
 }
 
 export default function connect(mapStateToProps, mapDispatchToProps) {
-  console.log(match(mapDispatchToProps, defaultMapDispatchToPropsFactories))
-  console.log(match(undefined, defaultMergePropsFactories))
   return connectAdvanced(defaultSelectorFactory, {
     shouldHandleStateChanges: Boolean(mapStateToProps),
     initMapStateToProps: wrapMapToPropsFunc(mapStateToProps),
-    initMapDispatchToProps: match(mapDispatchToProps, defaultMapDispatchToPropsFactories),
-    initMergeProps: match(undefined, defaultMergePropsFactories),
+    initMapDispatchToProps: wrapMapToPropsFunc(mapDispatchToProps),
+    initMergeProps: whenMergePropsIsOmitted,
     pure: true,
     areStatesEqual: (a, b) => a === b,
     areOwnPropsEqual: shallowEqual,

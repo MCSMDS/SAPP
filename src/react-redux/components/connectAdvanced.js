@@ -4,7 +4,7 @@ import { isContextConsumer } from 'react-is'
 import Subscription from '../utils/Subscription'
 import { useLayoutEffect } from 'react'
 import ReactReduxContext from './Context'
-import selectorFactory from './selectorFactory'
+import selectorFactory from '../connect/selectorFactory'
 
 const EMPTY_ARRAY = []
 

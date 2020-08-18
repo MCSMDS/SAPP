@@ -3,9 +3,7 @@ import connectAdvanced from '../components/connectAdvanced'
 const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({ ...ownProps, ...stateProps, ...dispatchProps })
 const getDependsOnOwnProps = mapToProps => mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1
 const wrapMapToPropsFunc = mapToProps => {
-  const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
-    return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
-  }
+  const proxy = (stateOrDispatch, ownProps) => proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
   proxy.dependsOnOwnProps = true
   proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
     proxy.mapToProps = mapToProps

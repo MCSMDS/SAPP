@@ -1,48 +1,7 @@
 export default function pureFinalPropsSelectorFactory(dispatch) {
 
-  //const getDependsOnOwnProps = mapToProps => mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1
-  /*   const wrapMapToPropsFunc = mapToProps => {
-      const proxy = stateOrDispatch => proxy.mapToProps(stateOrDispatch)
-      proxy.dependsOnOwnProps = true
-      proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch) {
-        proxy.mapToProps = mapToProps
-        proxy.dependsOnOwnProps = false;
-        let props = proxy(stateOrDispatch)
-        if (typeof props === 'function') {
-          proxy.mapToProps = props
-          proxy.dependsOnOwnProps = getDependsOnOwnProps(props)
-          props = proxy(stateOrDispatch)
-        }
-        return props
-      }
-      return proxy
-    }
-  
-    const mapStateToProps = wrapMapToPropsFunc(state => ({ getStorage: key => state[key] }));
-    const mapDispatchToProps = wrapMapToPropsFunc(dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })) */
-
-  const wrapMapToPropsFunc1 = () => {
-    const proxy = stateOrDispatch => proxy.mapToProps(stateOrDispatch)
-    proxy.dependsOnOwnProps = true
-    proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch) {
-      proxy.dependsOnOwnProps = false;
-      return { getStorage: key => stateOrDispatch[key] }
-    }
-    return proxy
-  }
-
-  const wrapMapToPropsFunc2 = () => {
-    const proxy = stateOrDispatch => proxy.mapToProps(stateOrDispatch)
-    proxy.dependsOnOwnProps = true
-    proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch) {
-      proxy.dependsOnOwnProps = false;
-      return { setStorage: (key, value) => stateOrDispatch({ type: key, value }) }
-    }
-    return proxy
-  }
-
-  const mapStateToProps = wrapMapToPropsFunc1();
-  const mapDispatchToProps = wrapMapToPropsFunc2()
+  const mapStateToProps = state => ({ getStorage: key => state[key] })
+  const mapDispatchToProps = dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })
 
   function shallowEqual(objA, objB) {
     if (objA === objB) return true;
@@ -75,16 +34,11 @@ export default function pureFinalPropsSelectorFactory(dispatch) {
 
   function handleNewPropsAndNewState() {
     stateProps = mapStateToProps(state)
-    console.log(mapDispatchToProps.dependsOnOwnProps)
-    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch)
     mergedProps = ({ ...ownProps, ...stateProps, ...dispatchProps });
     return mergedProps
   }
 
   function handleNewProps() {
-    console.log(mapStateToProps.dependsOnOwnProps, mapDispatchToProps.dependsOnOwnProps)
-    if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state)
-    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch)
     mergedProps = ({ ...ownProps, ...stateProps, ...dispatchProps });
     return mergedProps
   }

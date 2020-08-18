@@ -52,13 +52,11 @@ export default function pureFinalPropsSelectorFactory(dispatch) {
   }
 
   function handleSubsequentCalls(nextState, nextOwnProps) {
-    const propsChanged = !shallowEqual(nextOwnProps, ownProps)
-    const stateChanged = nextState !== state
     state = nextState
     ownProps = nextOwnProps
-    if (propsChanged && stateChanged) return handleNewPropsAndNewState()
-    if (propsChanged) return handleNewProps()
-    if (stateChanged) return handleNewState()
+    if (!shallowEqual(nextOwnProps, ownProps) && nextState !== state) return handleNewPropsAndNewState()
+    if (!shallowEqual(nextOwnProps, ownProps)) return handleNewProps()
+    if (nextState !== state) return handleNewState()
     return mergedProps
   }
 

@@ -1,7 +1,7 @@
 import connectAdvanced from '../components/connectAdvanced'
 import defaultSelectorFactory from './selectorFactory'
 
-const whenMergePropsIsOmitted = () => function defaultMergeProps(stateProps, dispatchProps, ownProps) {
+const whenMergePropsIsOmitted = function defaultMergeProps(stateProps, dispatchProps, ownProps) {
   return { ...ownProps, ...stateProps, ...dispatchProps }
 }
 
@@ -10,24 +10,22 @@ function getDependsOnOwnProps(mapToProps) {
 }
 
 function wrapMapToPropsFunc(mapToProps) {
-  return function initProxySelector() {
-    const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
-      return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
-    }
-    proxy.dependsOnOwnProps = true
-    proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
-      proxy.mapToProps = mapToProps
-      proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps)
-      let props = proxy(stateOrDispatch, ownProps)
-      if (typeof props === 'function') {
-        proxy.mapToProps = props
-        proxy.dependsOnOwnProps = getDependsOnOwnProps(props)
-        props = proxy(stateOrDispatch, ownProps)
-      }
-      return props
-    }
-    return proxy
+  const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
+    return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
   }
+  proxy.dependsOnOwnProps = true
+  proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
+    proxy.mapToProps = mapToProps
+    proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps)
+    let props = proxy(stateOrDispatch, ownProps)
+    if (typeof props === 'function') {
+      proxy.mapToProps = props
+      proxy.dependsOnOwnProps = getDependsOnOwnProps(props)
+      props = proxy(stateOrDispatch, ownProps)
+    }
+    return props
+  }
+  return proxy
 }
 
 export default function connect(mapStateToProps, mapDispatchToProps) {

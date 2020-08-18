@@ -76,5 +76,5 @@ function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, merg
 }
 
 export default function finalPropsSelectorFactory(dispatch, { initMapStateToProps, initMapDispatchToProps, initMergeProps }) {
-  return pureFinalPropsSelectorFactory(initMapStateToProps(), initMapDispatchToProps(), initMergeProps(), dispatch)
+  return pureFinalPropsSelectorFactory(initMapStateToProps, initMapDispatchToProps, initMergeProps, dispatch)
 }

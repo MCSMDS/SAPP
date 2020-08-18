@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect } from 'react'
 import ReactReduxContext from './Context'
-import Subscription from '../utils/Subscription'
+import Subscription from './Subscription'
 
 export default function Provider({ store, context, children }) {
   const contextValue = useMemo(() => {

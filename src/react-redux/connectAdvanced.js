@@ -1,10 +1,10 @@
 import hoistStatics from 'hoist-non-react-statics'
 import React, { useContext, useMemo, useRef, useReducer } from 'react'
 import { isContextConsumer } from 'react-is'
-import Subscription from '../utils/Subscription'
+import Subscription from './Subscription'
 import { useLayoutEffect } from 'react'
 import ReactReduxContext from './Context'
-import selectorFactory from '../connect/selectorFactory'
+import selectorFactory from './selectorFactory'
 
 const EMPTY_ARRAY = []
 

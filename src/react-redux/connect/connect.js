@@ -1,15 +1,8 @@
 import connectAdvanced from '../components/connectAdvanced'
-import defaultSelectorFactory from './selectorFactory'
 
-const whenMergePropsIsOmitted = function defaultMergeProps(stateProps, dispatchProps, ownProps) {
-  return { ...ownProps, ...stateProps, ...dispatchProps }
-}
-
-function getDependsOnOwnProps(mapToProps) {
-  return mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1
-}
-
-function wrapMapToPropsFunc(mapToProps) {
+const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({ ...ownProps, ...stateProps, ...dispatchProps })
+const getDependsOnOwnProps = mapToProps => mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1
+const wrapMapToPropsFunc = mapToProps => {
   const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
     return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
   }
@@ -29,10 +22,9 @@ function wrapMapToPropsFunc(mapToProps) {
 }
 
 export default function connect(mapStateToProps, mapDispatchToProps) {
-  return connectAdvanced(defaultSelectorFactory, {
-    shouldHandleStateChanges: Boolean(mapStateToProps),
+  return connectAdvanced({
     initMapStateToProps: wrapMapToPropsFunc(mapStateToProps),
     initMapDispatchToProps: wrapMapToPropsFunc(mapDispatchToProps),
-    initMergeProps: whenMergePropsIsOmitted
+    initMergeProps: defaultMergeProps
   })
 }

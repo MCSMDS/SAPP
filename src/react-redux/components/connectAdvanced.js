@@ -69,29 +69,17 @@ function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPr
 
 const initStateUpdates = () => [null, 0]
 
-export default function connectAdvanced(
-
-  selectorFactory,
-  {
-    getDisplayName = name => `ConnectAdvanced(${name})`,
-
-    methodName = 'connectAdvanced',
-
-    renderCountProp = undefined,
-
-    shouldHandleStateChanges = true,
-
-    storeKey = 'store',
-
-    withRef = false,
-
-    forwardRef = false,
-
-    context = ReactReduxContext,
-
-    ...connectOptions
-  } = {}
-) {
+export default function connectAdvanced(selectorFactory, {
+  getDisplayName = name => `ConnectAdvanced(${name})`,
+  methodName = 'connectAdvanced',
+  renderCountProp = undefined,
+  shouldHandleStateChanges = true,
+  storeKey = 'store',
+  withRef = false,
+  forwardRef = false,
+  context = ReactReduxContext,
+  ...connectOptions
+} = {}) {
 
   const Context = context
 

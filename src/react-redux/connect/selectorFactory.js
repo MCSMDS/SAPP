@@ -20,10 +20,6 @@ function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, merg
     return true;
   }
 
-  const areStatesEqual = (a, b) => a === b;
-  const areOwnPropsEqual = shallowEqual
-  const areStatePropsEqual = shallowEqual
-
   let hasRunAtLeastOnce = false
   let state
   let ownProps
@@ -57,15 +53,15 @@ function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, merg
 
   function handleNewState() {
     const nextStateProps = mapStateToProps(state, ownProps)
-    const statePropsChanged = !areStatePropsEqual(nextStateProps, stateProps)
+    const statePropsChanged = !shallowEqual(nextStateProps, stateProps)
     stateProps = nextStateProps
     if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
     return mergedProps
   }
 
   function handleSubsequentCalls(nextState, nextOwnProps) {
-    const propsChanged = !areOwnPropsEqual(nextOwnProps, ownProps)
-    const stateChanged = !areStatesEqual(nextState, state)
+    const propsChanged = !shallowEqual(nextOwnProps, ownProps)
+    const stateChanged = nextState !== state
     state = nextState
     ownProps = nextOwnProps
     if (propsChanged && stateChanged) return handleNewPropsAndNewState()
@@ -80,8 +76,5 @@ function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, merg
 }
 
 export default function finalPropsSelectorFactory(dispatch, { initMapStateToProps, initMapDispatchToProps, initMergeProps }) {
-  const mapStateToProps = initMapStateToProps()
-  const mapDispatchToProps = initMapDispatchToProps()
-  const mergeProps = initMergeProps()
-  return pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch)
+  return pureFinalPropsSelectorFactory(initMapStateToProps(), initMapDispatchToProps(), initMergeProps(), dispatch)
 }

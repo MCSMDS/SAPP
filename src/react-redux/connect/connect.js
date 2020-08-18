@@ -13,31 +13,36 @@ function match(arg, factories) {
   return () => { throw new Error(``) }
 }
 
-function initProxySelector() {
-  const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
-    return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
-  }
-  proxy.dependsOnOwnProps = true
-  proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
-    proxy.mapToProps = mapToProps
-    proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps)
-    let props = proxy(stateOrDispatch, ownProps)
-    if (typeof props === 'function') {
-      proxy.mapToProps = props
-      proxy.dependsOnOwnProps = getDependsOnOwnProps(props)
-      props = proxy(stateOrDispatch, ownProps)
-    }
-    return props
-  }
-  return proxy
+function getDependsOnOwnProps(mapToProps) {
+  return mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1
 }
 
+function wrapMapToPropsFunc(mapToProps) {
+  return function initProxySelector() {
+    const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
+      return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
+    }
+    proxy.dependsOnOwnProps = true
+    proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
+      proxy.mapToProps = mapToProps
+      proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps)
+      let props = proxy(stateOrDispatch, ownProps)
+      if (typeof props === 'function') {
+        proxy.mapToProps = props
+        proxy.dependsOnOwnProps = getDependsOnOwnProps(props)
+        props = proxy(stateOrDispatch, ownProps)
+      }
+      return props
+    }
+    return proxy
+  }
+}
 export default function connect(mapStateToProps, mapDispatchToProps) {
   console.log(match(mapDispatchToProps, defaultMapDispatchToPropsFactories))
   console.log(match(undefined, defaultMergePropsFactories))
   return connectAdvanced(defaultSelectorFactory, {
     shouldHandleStateChanges: Boolean(mapStateToProps),
-    initMapStateToProps: initProxySelector,
+    initMapStateToProps: wrapMapToPropsFunc(mapStateToProps),
     initMapDispatchToProps: match(mapDispatchToProps, defaultMapDispatchToPropsFactories),
     initMergeProps: match(undefined, defaultMergePropsFactories),
     pure: true,

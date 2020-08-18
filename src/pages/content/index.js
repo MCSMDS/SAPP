@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from '../../react-redux';
+import connect from '../../react-redux/connect';
 import { Route, useHistory } from "react-router-dom";
 import { Container, Typography, CircularProgress, Box } from "@material-ui/core";
 import Myfile from "./file";

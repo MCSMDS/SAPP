@@ -6,7 +6,7 @@ import { CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 
 import { createStore, combineReducers } from 'redux'
-import { Provider } from './react-redux'
+import Provider from './react-redux/Provider'
 
 import App from "./App";
 import theme from "./theme";

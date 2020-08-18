@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import { connect } from './react-redux';
+import connect from './react-redux/connect';
 import { Route, useHistory } from "react-router-dom";
 import { Login, Mails, Content, Setting, About } from "./pages";
 import sapi from "./sapi";

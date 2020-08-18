@@ -63,7 +63,7 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
 
 const initStateUpdates = () => [null, 0]
 
-export default function connectAdvanced(connectOptions) {
+export default function connectAdvanced() {
   const Context = ReactReduxContext
   return function wrapWithConnect(WrappedComponent) {
     const usePureOnlyMemo = useMemo
@@ -83,7 +83,7 @@ export default function connectAdvanced(connectOptions) {
       const store = didStoreComeFromProps ? props.store : contextValue.store
 
       const childPropsSelector = useMemo(() => {
-        return selectorFactory(connectOptions, store.dispatch)
+        return selectorFactory(store.dispatch)
       }, [store])
       const [subscription, notifyNestedSubs] = useMemo(() => {
         const subscription = new Subscription(store, didStoreComeFromProps ? null : contextValue.subscription)

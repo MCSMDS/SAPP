@@ -86,7 +86,7 @@ export default function connectAdvanced(connectOptions) {
       const store = didStoreComeFromProps ? props.store : contextValue.store
 
       const childPropsSelector = useMemo(() => {
-        return selectorFactory(store.dispatch, connectOptions)
+        return selectorFactory(connectOptions, store.dispatch)
       }, [store])
       const [subscription, notifyNestedSubs] = useMemo(() => {
         const subscription = new Subscription(store, didStoreComeFromProps ? null : contextValue.subscription)

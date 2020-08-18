@@ -21,8 +21,8 @@ const wrapMapToPropsFunc = mapToProps => {
 
 export default function connect(mapStateToProps, mapDispatchToProps) {
   return connectAdvanced({
-    initMapStateToProps: wrapMapToPropsFunc(mapStateToProps),
-    initMapDispatchToProps: wrapMapToPropsFunc(mapDispatchToProps),
-    initMergeProps: defaultMergeProps
+    mapStateToProps: wrapMapToPropsFunc(mapStateToProps),
+    mapDispatchToProps: wrapMapToPropsFunc(mapDispatchToProps),
+    mergeProps: defaultMergeProps
   })
 }

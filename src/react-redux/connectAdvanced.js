@@ -66,7 +66,7 @@ const initStateUpdates = () => [null, 0]
 export default function connectAdvanced(connectOptions) {
   const Context = ReactReduxContext
   return function wrapWithConnect(WrappedComponent) {
-    //const usePureOnlyMemo = useMemo
+    const usePureOnlyMemo = useMemo
 
     function ConnectFunction(props) {
       const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
@@ -102,7 +102,7 @@ export default function connectAdvanced(connectOptions) {
       const childPropsFromStoreUpdate = useRef()
       const renderIsScheduled = useRef(false)
 
-      const actualChildProps = useMemo(() => {
+      const actualChildProps = usePureOnlyMemo(() => {
         if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
           return childPropsFromStoreUpdate.current
         }

@@ -30,10 +30,7 @@ const onClick = props => event => {
   props(document.querySelector("#username").value, document.querySelector("#password").value);
 };
 
-export default connect(
-  state => ({ getStorage: key => state[key] }),
-  dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })
-)(props => {
+export default connect(props => {
   const history = useHistory();
   const classes = useStyles();
 

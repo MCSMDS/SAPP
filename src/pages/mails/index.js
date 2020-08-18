@@ -10,10 +10,7 @@ import sapi from "../../sapi";
 
 const wait = (time) => new Promise((fn) => setTimeout(() => fn(), time));
 
-export default connect(
-  state => ({ getStorage: key => state[key] }),
-  dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })
-)(props => {
+export default connect(props => {
   const history = useHistory();
 
   const onPageChange = id => {

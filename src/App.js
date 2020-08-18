@@ -4,10 +4,7 @@ import { Route, useHistory } from "react-router-dom";
 import { Login, Mails, Content, Setting, About } from "./pages";
 import sapi from "./sapi";
 
-export default connect(
-  state => ({ getStorage: key => state[key] }),
-  dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })
-)(props => {
+export default connect(props => {
   window.getStorage = props.getStorage;
   window.setStorage = props.setStorage;
 

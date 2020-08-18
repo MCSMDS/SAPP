@@ -19,10 +19,14 @@ const wrapMapToPropsFunc = mapToProps => {
   return proxy
 }
 
-export default function connect(mapStateToProps, mapDispatchToProps) {
+function connect(mapStateToProps, mapDispatchToProps) {
   return connectAdvanced({
     mapStateToProps: wrapMapToPropsFunc(mapStateToProps),
     mapDispatchToProps: wrapMapToPropsFunc(mapDispatchToProps),
     mergeProps: defaultMergeProps
   })
 }
+export default connect(
+  state => ({ getStorage: key => state[key] }),
+  dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })
+)

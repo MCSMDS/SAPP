@@ -24,10 +24,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default connect(
-  state => ({ getStorage: key => state[key] }),
-  dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })
-)(props => {
+export default connect(props => {
   const { root } = useStyles();
 
   const history = useHistory();

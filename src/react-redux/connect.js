@@ -57,8 +57,6 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
   return unsubscribeWrapper
 }
 
-const initStateUpdates = () => [null, 0]
-
 const Context = ReactReduxContext
 
 export default function wrapWithConnect(WrappedComponent) {
@@ -91,7 +89,7 @@ export default function wrapWithConnect(WrappedComponent) {
       return { ...contextValue, subscription }
     }, [didStoreComeFromProps, contextValue, subscription])
 
-    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, [], initStateUpdates)
+    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, [], () => [null, 0])
     if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
     const lastChildProps = useRef()
     const lastWrapperProps = useRef(wrapperProps)
@@ -123,6 +121,5 @@ export default function wrapWithConnect(WrappedComponent) {
 
   const Connect = React.memo(ConnectFunction)
   Connect.WrappedComponent = WrappedComponent
-  Connect.displayName = "Connect(Component)"
   return hoistStatics(Connect, WrappedComponent)
 }

@@ -14,6 +14,7 @@ function match(arg, factories) {
 }
 
 export default function connect(mapStateToProps, mapDispatchToProps) {
+  console.log(match(mapStateToProps, defaultMapStateToPropsFactories))
   return connectAdvanced(defaultSelectorFactory, {
     shouldHandleStateChanges: Boolean(mapStateToProps),
     initMapStateToProps: match(mapStateToProps, defaultMapStateToPropsFactories),

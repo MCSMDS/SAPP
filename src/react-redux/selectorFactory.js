@@ -18,7 +18,7 @@ export default function pureFinalPropsSelectorFactory(dispatch) {
     return proxy
   }
 
-  const mapStateToProps = wrapMapToPropsFunc(state => ({ getStorage: key => state[key] })),
+  const mapStateToProps = wrapMapToPropsFunc(state => ({ getStorage: key => state[key] }));
   const mapDispatchToProps = wrapMapToPropsFunc(dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) }))
 
   function shallowEqual(objA, objB) {

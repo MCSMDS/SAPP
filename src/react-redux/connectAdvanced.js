@@ -115,7 +115,7 @@ export default function connectAdvanced(connectOptions) {
         [store, subscription, childPropsSelector]
       )
 
-      const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps])
+      const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps, previousStateUpdateResult])
       const renderedChild = useMemo(() => {
         return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
       }, [renderedWrappedComponent, overriddenContextValue])

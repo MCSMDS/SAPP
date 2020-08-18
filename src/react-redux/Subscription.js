@@ -1,7 +1,5 @@
 import { unstable_batchedUpdates } from 'react-dom';
 
-const nullListeners = { notify() { } }
-
 function createListenerCollection() {
   let first = null
   let last = null
@@ -57,7 +55,7 @@ export default class Subscription {
     this.store = store
     this.parentSub = parentSub
     this.unsubscribe = null
-    this.listeners = nullListeners
+    this.listeners = { notify() { } }
     this.handleChangeWrapper = this.handleChangeWrapper.bind(this)
   }
 
@@ -90,7 +88,7 @@ export default class Subscription {
       this.unsubscribe()
       this.unsubscribe = null
       this.listeners.clear()
-      this.listeners = nullListeners
+      this.listeners = { notify() { } }
     }
   }
 }

@@ -63,73 +63,70 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
 
 const initStateUpdates = () => [null, 0]
 
-function connectAdvanced() {
-  const Context = ReactReduxContext
-  return function wrapWithConnect(WrappedComponent) {
-    const usePureOnlyMemo = useMemo
+const Context = ReactReduxContext
 
-    function ConnectFunction(props) {
-      const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
-        const { reactReduxForwardedRef, ...wrapperProps } = props
-        return [props.context, reactReduxForwardedRef, wrapperProps]
-      }, [props])
+export default function wrapWithConnect(WrappedComponent) {
+  const usePureOnlyMemo = useMemo
 
-      const ContextToUse = useMemo(() => {
-        return propsContext && propsContext.Consumer && isContextConsumer(<propsContext.Consumer />) ? propsContext : Context
-      }, [propsContext])
+  function ConnectFunction(props) {
+    const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
+      const { reactReduxForwardedRef, ...wrapperProps } = props
+      return [props.context, reactReduxForwardedRef, wrapperProps]
+    }, [props])
 
-      const contextValue = useContext(ContextToUse)
-      const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)
-      const store = didStoreComeFromProps ? props.store : contextValue.store
+    const ContextToUse = useMemo(() => {
+      return propsContext && propsContext.Consumer && isContextConsumer(<propsContext.Consumer />) ? propsContext : Context
+    }, [propsContext])
 
-      const childPropsSelector = useMemo(() => {
-        return selectorFactory(store.dispatch)
-      }, [store])
-      const [subscription, notifyNestedSubs] = useMemo(() => {
-        const subscription = new Subscription(store, didStoreComeFromProps ? null : contextValue.subscription)
-        const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
-        return [subscription, notifyNestedSubs]
-      }, [store, didStoreComeFromProps, contextValue])
-      const overriddenContextValue = useMemo(() => {
-        if (didStoreComeFromProps) return contextValue
-        return { ...contextValue, subscription }
-      }, [didStoreComeFromProps, contextValue, subscription])
+    const contextValue = useContext(ContextToUse)
+    const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)
+    const store = didStoreComeFromProps ? props.store : contextValue.store
 
-      const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, EMPTY_ARRAY, initStateUpdates)
-      if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
-      const lastChildProps = useRef()
-      const lastWrapperProps = useRef(wrapperProps)
-      const childPropsFromStoreUpdate = useRef()
-      const renderIsScheduled = useRef(false)
+    const childPropsSelector = useMemo(() => {
+      return selectorFactory(store.dispatch)
+    }, [store])
+    const [subscription, notifyNestedSubs] = useMemo(() => {
+      const subscription = new Subscription(store, didStoreComeFromProps ? null : contextValue.subscription)
+      const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
+      return [subscription, notifyNestedSubs]
+    }, [store, didStoreComeFromProps, contextValue])
+    const overriddenContextValue = useMemo(() => {
+      if (didStoreComeFromProps) return contextValue
+      return { ...contextValue, subscription }
+    }, [didStoreComeFromProps, contextValue, subscription])
 
-      const actualChildProps = usePureOnlyMemo(() => {
-        if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
-          return childPropsFromStoreUpdate.current
-        }
-        return childPropsSelector(store.getState(), wrapperProps)
-      }, [store, previousStateUpdateResult, wrapperProps])
+    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, EMPTY_ARRAY, initStateUpdates)
+    if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
+    const lastChildProps = useRef()
+    const lastWrapperProps = useRef(wrapperProps)
+    const childPropsFromStoreUpdate = useRef()
+    const renderIsScheduled = useRef(false)
 
-      useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
-        [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]
-      )
-      useIsomorphicLayoutEffectWithArgs(subscribeUpdates,
-        [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch],
-        [store, subscription, childPropsSelector]
-      )
+    const actualChildProps = usePureOnlyMemo(() => {
+      if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
+        return childPropsFromStoreUpdate.current
+      }
+      return childPropsSelector(store.getState(), wrapperProps)
+    }, [store, previousStateUpdateResult, wrapperProps])
 
-      const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps])
-      const renderedChild = useMemo(() => {
-        return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
-      }, [renderedWrappedComponent, overriddenContextValue])
-      return renderedChild
+    useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
+      [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]
+    )
+    useIsomorphicLayoutEffectWithArgs(subscribeUpdates,
+      [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch],
+      [store, subscription, childPropsSelector]
+    )
 
-    }
+    const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps])
+    const renderedChild = useMemo(() => {
+      return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
+    }, [renderedWrappedComponent, overriddenContextValue])
+    return renderedChild
 
-    const Connect = React.memo(ConnectFunction)
-    Connect.WrappedComponent = WrappedComponent
-    Connect.displayName = "Connect(Component)"
-    return hoistStatics(Connect, WrappedComponent)
   }
-}
 
-export default connectAdvanced();
+  const Connect = React.memo(ConnectFunction)
+  Connect.WrappedComponent = WrappedComponent
+  Connect.displayName = "Connect(Component)"
+  return hoistStatics(Connect, WrappedComponent)
+}

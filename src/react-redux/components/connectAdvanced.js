@@ -3,8 +3,7 @@ import React, { useContext, useMemo, useRef, useReducer } from 'react'
 import { isContextConsumer } from 'react-is'
 import Subscription from '../utils/Subscription'
 import { useLayoutEffect } from 'react'
-
-const ReactReduxContext = React.createContext(null);
+import ReactReduxContext from './Context'
 
 const EMPTY_ARRAY = []
 const NO_SUBSCRIPTION_ARRAY = [null, null]

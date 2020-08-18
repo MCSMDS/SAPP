@@ -1,8 +1,9 @@
 import { useReducer, useRef, useMemo, useContext, useDebugValue } from 'react'
 import { useReduxContext as useDefaultReduxContext } from './useReduxContext'
 import Subscription from '../utils/Subscription'
-import { useLayoutEffect } from 'react'
-import ReactReduxContext from '../components/Context'
+import React, { useLayoutEffect } from 'react'
+
+const ReactReduxContext = React.createContext(null);
 
 const refEquality = (a, b) => a === b
 

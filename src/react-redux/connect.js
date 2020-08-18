@@ -6,7 +6,11 @@ import { useLayoutEffect } from 'react'
 import ReactReduxContext from './Context'
 import selectorFactory from './selectorFactory'
 
-const storeStateUpdatesReducer = (state, action) => [action.payload, state[1] + 1]
+const EMPTY_ARRAY = []
+
+function storeStateUpdatesReducer(state, action) {
+  return [action.payload, state[1] + 1]
+}
 
 function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
   useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])
@@ -91,7 +95,7 @@ export default function wrapWithConnect(WrappedComponent) {
       return { ...contextValue, subscription }
     }, [didStoreComeFromProps, contextValue, subscription])
 
-    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, [], initStateUpdates)
+    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer(storeStateUpdatesReducer, EMPTY_ARRAY, initStateUpdates)
     if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
     const lastChildProps = useRef()
     const lastWrapperProps = useRef(wrapperProps)

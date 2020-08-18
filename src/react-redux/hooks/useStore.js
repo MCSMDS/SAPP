@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import { useReduxContext as useDefaultReduxContext } from './useReduxContext'
 
+const useDefaultReduxContext = () => useContext(React.createContext(null));
 const ReactReduxContext = React.createContext(null);
 
 export function createStoreHook(context = ReactReduxContext) {

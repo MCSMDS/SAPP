@@ -1,4 +1,4 @@
-export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDispatchToProps, mergeProps }, dispatch) {
+export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDispatchToProps }, dispatch) {
 
   function is(x, y) {
     if (x === y) {
@@ -32,7 +32,7 @@ export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDisp
     ownProps = firstOwnProps
     stateProps = mapStateToProps(state)
     dispatchProps = mapDispatchToProps(dispatch)
-    mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
+    mergedProps = ({ ...ownProps, ...stateProps, ...dispatchProps });
     hasRunAtLeastOnce = true
     return mergedProps
   }
@@ -40,14 +40,14 @@ export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDisp
   function handleNewPropsAndNewState() {
     stateProps = mapStateToProps(state)
     if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch)
-    mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
+    mergedProps = ({ ...ownProps, ...stateProps, ...dispatchProps });
     return mergedProps
   }
 
   function handleNewProps() {
     if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state)
     if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch)
-    mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
+    mergedProps = ({ ...ownProps, ...stateProps, ...dispatchProps });
     return mergedProps
   }
 
@@ -55,7 +55,7 @@ export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDisp
     const nextStateProps = mapStateToProps(state)
     const statePropsChanged = !shallowEqual(nextStateProps, stateProps)
     stateProps = nextStateProps
-    if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
+    if (statePropsChanged) mergedProps = ({ ...ownProps, ...stateProps, ...dispatchProps });
     return mergedProps
   }
 

@@ -20,6 +20,5 @@ const wrapMapToPropsFunc = mapToProps => {
 
 export default connectAdvanced({
   mapStateToProps: wrapMapToPropsFunc(state => ({ getStorage: key => state[key] })),
-  mapDispatchToProps: wrapMapToPropsFunc(dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })),
-  mergeProps: (stateProps, dispatchProps, ownProps) => ({ ...ownProps, ...stateProps, ...dispatchProps })
+  mapDispatchToProps: wrapMapToPropsFunc(dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) }))
 })

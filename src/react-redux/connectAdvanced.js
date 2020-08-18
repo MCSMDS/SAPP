@@ -66,6 +66,7 @@ const initStateUpdates = () => [null, 0]
 export default function connectAdvanced(connectOptions) {
   const Context = ReactReduxContext
   return function wrapWithConnect(WrappedComponent) {
+    console.log(WrappedComponent)
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
     const displayName = (name => `Connect(${name})`)(wrappedComponentName)
     const pure = true

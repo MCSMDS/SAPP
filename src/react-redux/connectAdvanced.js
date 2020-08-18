@@ -105,7 +105,7 @@ export default function connectAdvanced(connectOptions) {
           return childPropsFromStoreUpdate.current
         }
         return childPropsSelector(store.getState(), wrapperProps)
-      }, [store, previousStateUpdateResult, wrapperProps, childPropsSelector])
+      }, [store, wrapperProps, childPropsSelector])
 
       useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
         [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]
@@ -115,7 +115,7 @@ export default function connectAdvanced(connectOptions) {
         [store, subscription, childPropsSelector]
       )
 
-      const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps, previousStateUpdateResult])
+      const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps])
       const renderedChild = useMemo(() => {
         return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
       }, [renderedWrappedComponent, overriddenContextValue])

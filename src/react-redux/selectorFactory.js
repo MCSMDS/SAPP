@@ -30,29 +30,29 @@ export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDisp
   function handleFirstCall(firstState, firstOwnProps) {
     state = firstState
     ownProps = firstOwnProps
-    stateProps = mapStateToProps(state, ownProps)
-    dispatchProps = mapDispatchToProps(dispatch, ownProps)
+    stateProps = mapStateToProps(state)
+    dispatchProps = mapDispatchToProps(dispatch)
     mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
     hasRunAtLeastOnce = true
     return mergedProps
   }
 
   function handleNewPropsAndNewState() {
-    stateProps = mapStateToProps(state, ownProps)
-    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps)
+    stateProps = mapStateToProps(state)
+    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch)
     mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
     return mergedProps
   }
 
   function handleNewProps() {
-    if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state, ownProps)
-    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps)
+    if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state)
+    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch)
     mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
     return mergedProps
   }
 
   function handleNewState() {
-    const nextStateProps = mapStateToProps(state, ownProps)
+    const nextStateProps = mapStateToProps(state)
     const statePropsChanged = !shallowEqual(nextStateProps, stateProps)
     stateProps = nextStateProps
     if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
@@ -71,7 +71,6 @@ export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDisp
   }
 
   return function pureFinalPropsSelector(nextState, nextOwnProps) {
-    console.log(nextOwnProps)
     return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps)
   }
 }

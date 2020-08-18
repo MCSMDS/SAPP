@@ -1,8 +1,8 @@
-import { getBatch } from './batch'
+import { unstable_batchedUpdates } from 'react-dom';
+
 const nullListeners = { notify() { } }
 
 function createListenerCollection() {
-  const batch = getBatch()
   let first = null
   let last = null
 
@@ -13,7 +13,7 @@ function createListenerCollection() {
     },
 
     notify() {
-      batch(() => {
+      unstable_batchedUpdates(() => {
         let listener = first
         while (listener) {
           listener.callback()

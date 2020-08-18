@@ -69,11 +69,7 @@ export default function connectAdvanced(selectorFactory, { shouldHandleStateChan
   return function wrapWithConnect(WrappedComponent) {
     const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
     const displayName = (name => `Connect(${name})`)(wrappedComponentName)
-    const selectorFactoryOptions = { ...connectOptions, getDisplayName: name => `Connect(${name})`, methodName: 'connect', renderCountProp: undefined, shouldHandleStateChanges, storeKey: 'store', displayName, wrappedComponentName, WrappedComponent }
     const pure = true
-    function createChildSelector(store) {
-      return selectorFactory(store.dispatch, selectorFactoryOptions)
-    }
     const usePureOnlyMemo = pure ? useMemo : callback => callback()
 
     function ConnectFunction(props) {
@@ -91,7 +87,7 @@ export default function connectAdvanced(selectorFactory, { shouldHandleStateChan
       const store = didStoreComeFromProps ? props.store : contextValue.store
 
       const childPropsSelector = useMemo(() => {
-        return createChildSelector(store)
+        return selectorFactory(store.dispatch, { ...connectOptions })
       }, [store])
       const [subscription, notifyNestedSubs] = useMemo(() => {
         if (!shouldHandleStateChanges) return NO_SUBSCRIPTION_ARRAY
@@ -128,7 +124,7 @@ export default function connectAdvanced(selectorFactory, { shouldHandleStateChan
 
       const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps])
       const renderedChild = useMemo(() => {
-        if (shouldHandleStateChanges) return (<ContextToUse.Provider value={overriddenContextValue}>              {renderedWrappedComponent}            </ContextToUse.Provider>)
+        if (shouldHandleStateChanges) return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
         return renderedWrappedComponent
       }, [renderedWrappedComponent, overriddenContextValue])
       return renderedChild

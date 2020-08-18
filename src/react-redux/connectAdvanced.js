@@ -66,11 +66,7 @@ const initStateUpdates = () => [null, 0]
 export default function connectAdvanced(connectOptions) {
   const Context = ReactReduxContext
   return function wrapWithConnect(WrappedComponent) {
-    console.log(WrappedComponent)
-    const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
-    const displayName = (name => `Connect(${name})`)(wrappedComponentName)
-    const pure = true
-    const usePureOnlyMemo = pure ? useMemo : callback => callback()
+    const usePureOnlyMemo = true ? useMemo : callback => callback()
 
     function ConnectFunction(props) {
       const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
@@ -129,9 +125,9 @@ export default function connectAdvanced(connectOptions) {
 
     }
 
-    const Connect = pure ? React.memo(ConnectFunction) : ConnectFunction
+    const Connect = true ? React.memo(ConnectFunction) : ConnectFunction
     Connect.WrappedComponent = WrappedComponent
-    Connect.displayName = displayName
+    Connect.displayName = "Connect(Component)"
     return hoistStatics(Connect, WrappedComponent)
   }
 }

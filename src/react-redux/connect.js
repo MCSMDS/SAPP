@@ -32,7 +32,7 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
       lastChildProps.current = newChildProps
       childPropsFromStoreUpdate.current = newChildProps
       renderIsScheduled.current = true
-      forceComponentUpdateDispatch({ type: 'STORE_UPDATED', payload: { error } })
+      forceComponentUpdateDispatch({ type: 'STORE_UPDATED', payload: { error: 'error' } })
     }
   }
   subscription.onStateChange = checkForUpdates

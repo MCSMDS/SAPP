@@ -5,7 +5,7 @@ const wrapMapToPropsFunc = mapToProps => {
   const proxy = (stateOrDispatch, ownProps) => proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch)
   proxy.dependsOnOwnProps = true
   proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
-    console.log(stateOrDispatch, ownProps)
+    console.log( ownProps)
     proxy.mapToProps = mapToProps
     proxy.dependsOnOwnProps = false;
     let props = proxy(stateOrDispatch, ownProps)

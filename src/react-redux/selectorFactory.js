@@ -71,6 +71,7 @@ export default function pureFinalPropsSelectorFactory({ mapStateToProps, mapDisp
   }
 
   return function pureFinalPropsSelector(nextState, nextOwnProps) {
+    console.log(nextOwnProps)
     return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps)
   }
 }

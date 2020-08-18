@@ -6,7 +6,7 @@ import { useLayoutEffect } from 'react'
 import ReactReduxContext from './Context'
 import selectorFactory from './selectorFactory'
 
-var storeStateUpdatesReducer = (state, action) => [action.payload, state[1] + 1]
+const storeStateUpdatesReducer = (state, action) => [action.payload, state[1] + 1]
 
 function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
   useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])

@@ -11,6 +11,7 @@ function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled
   lastChildProps.current = actualChildProps
   renderIsScheduled.current = false
   if (childPropsFromStoreUpdate.current) {
+    console.log(1)
     childPropsFromStoreUpdate.current = null
     notifyNestedSubs()
   }
@@ -58,17 +59,11 @@ export default function wrapWithConnect(WrappedComponent) {
     const lastWrapperProps = useRef(props)
     const childPropsFromStoreUpdate = useRef()
     const renderIsScheduled = useRef(false)
-    /* 
-        const actualChildProps = usePureOnlyMemo(() => {
-          if (childPropsFromStoreUpdate.current && props === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
-          return childPropsSelector(store.getState(), props)
-        }, [store, previousStateUpdateResult, props])
-     */
 
-
-
-    const actualChildProps = childPropsFromStoreUpdate.current && props === lastWrapperProps.current ? actualChildProps = childPropsFromStoreUpdate.current : actualChildProps = childPropsSelector(store.getState(), props)
-
+    const actualChildProps = usePureOnlyMemo(() => {
+      if (childPropsFromStoreUpdate.current && props === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
+      return childPropsSelector(store.getState(), props)
+    }, [store, previousStateUpdateResult, props])
 
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs])
     useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector])

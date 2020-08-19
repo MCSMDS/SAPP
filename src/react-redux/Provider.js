@@ -10,7 +10,6 @@ export default function Provider({ store, children }) {
   }, [store])
   useEffect(() => {
     contextValue.subscription.trySubscribe()
-    if (store.getState() !== store.getState()) contextValue.subscription.notifyNestedSubs();
     return () => {
       contextValue.subscription.tryUnsubscribe()
       contextValue.subscription.onStateChange = null

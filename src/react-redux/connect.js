@@ -31,16 +31,12 @@ export default function wrapWithConnect(WrappedComponent) {
     notifyNestedSubs();
 
     useLayoutEffect(() => {
-      const checkForUpdates = () => {
-        let newChildProps = childPropsSelector(store.getState(), lastWrapperProps.current);
-        lastChildProps.current = newChildProps;
-        childPropsFromStoreUpdate.current = newChildProps;
+      subscription.onStateChange = () => {
+        lastChildProps.current = childPropsFromStoreUpdate.current = childPropsSelector(store.getState(), lastWrapperProps.current);
         renderIsScheduled.current = true;
         forceComponentUpdateDispatch({ type: "STORE_UPDATED", payload: {} });
       };
-      subscription.onStateChange = checkForUpdates;
       subscription.trySubscribe();
-      //checkForUpdates();
       return () => {
         subscription.tryUnsubscribe();
         subscription.onStateChange = null;

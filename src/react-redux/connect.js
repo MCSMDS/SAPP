@@ -95,7 +95,7 @@ export default function wrapWithConnect(WrappedComponent) {
       [store, subscription, childPropsSelector]
     )
 
-    const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])
+    const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps])
     const renderedChild = useMemo(() => {
       return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
     }, [renderedWrappedComponent, overriddenContextValue])

@@ -35,6 +35,7 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
   subscription.trySubscribe()
   checkForUpdates()
   const unsubscribeWrapper = () => {
+    console.log(111111111111111111111111111111)
     didUnsubscribe = true
     subscription.tryUnsubscribe()
     subscription.onStateChange = null

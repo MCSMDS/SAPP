@@ -72,10 +72,6 @@ export default class Subscription {
     if (this.onStateChange) this.onStateChange()
   }
 
-  isSubscribed() {
-    return Boolean(this.unsubscribe)
-  }
-
   trySubscribe() {
     if (!this.unsubscribe) {
       this.unsubscribe = this.parentSub ? this.parentSub.addNestedSub(this.handleChangeWrapper) : this.store.subscribe(this.handleChangeWrapper)

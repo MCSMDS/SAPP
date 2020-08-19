@@ -1,7 +1,6 @@
 import hoistStatics from 'hoist-non-react-statics'
-import React, { useContext, useMemo, useRef, useReducer } from 'react'
+import React, { useContext, useMemo, useRef, useReducer, useLayoutEffect } from 'react'
 import Subscription from './Subscription'
-import { useLayoutEffect } from 'react'
 import Context from './Context'
 import selectorFactory from './selectorFactory'
 
@@ -73,9 +72,8 @@ export default function wrapWithConnect(WrappedComponent) {
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs])
     useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector])
 
-    const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])
-    const renderedChild = useMemo(() => <Context.Provider value={{ ...contextValue, subscription }}>{renderedWrappedComponent}</Context.Provider>, [renderedWrappedComponent, contextValue, subscription])
-    return renderedChild
+    const renderedWrappedComponent = <WrappedComponent {...actualChildProps} />
+    return <Context.Provider value={{ ...contextValue, subscription }}>{renderedWrappedComponent}</Context.Provider>
 
   }
 

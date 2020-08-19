@@ -31,7 +31,7 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
       lastChildProps.current = newChildProps
       childPropsFromStoreUpdate.current = newChildProps
       renderIsScheduled.current = true
-      forceComponentUpdateDispatch({ type: 'STORE_UPDATED', payload: { error: undefined } })
+      forceComponentUpdateDispatch({ type: 'STORE_UPDATED' })
     }
   }
   subscription.onStateChange = checkForUpdates
@@ -69,7 +69,6 @@ export default function wrapWithConnect(WrappedComponent) {
     }, [didStoreComeFromProps, contextValue, subscription])
 
     const [previousStateUpdateResult, forceComponentUpdateDispatch] = useReducer((state, action) => action.payload, null)
-    if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
     const lastChildProps = useRef()
     const lastWrapperProps = useRef(wrapperProps)
     const childPropsFromStoreUpdate = useRef()
@@ -78,7 +77,7 @@ export default function wrapWithConnect(WrappedComponent) {
     const actualChildProps = usePureOnlyMemo(() => {
       if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
       return childPropsSelector(store.getState(), wrapperProps)
-    }, [store, wrapperProps])
+    }, [store, previousStateUpdateResult, wrapperProps])
 
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
       [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]

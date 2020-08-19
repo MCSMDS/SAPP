@@ -51,13 +51,17 @@ export default function wrapWithConnect(WrappedComponent) {
     const contextValue = useContext(Context)
     const store = contextValue.store
 
-    const childPropsSelector = selectorFactory(store.dispatch)
+    const childPropsSelector = useMemo(() => selectorFactory(store.dispatch), [store])
 
-    const [subscription, notifyNestedSubs] = useMemo(() => {
-      const subscription = new Subscription(store, contextValue.subscription)
-      const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
-      return [subscription, notifyNestedSubs]
-    }, [store, contextValue])
+    /*     const [subscription, notifyNestedSubs] = useMemo(() => {
+          const subscription = new Subscription(store, contextValue.subscription)
+          const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
+          return [subscription, notifyNestedSubs]
+        }, [store, contextValue]) */
+
+
+    const subscription = new Subscription(store, contextValue.subscription)
+    const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
 
     const [previousStateUpdateResult, forceComponentUpdateDispatch] = useReducer((state, action) => action.payload, null)
     const lastChildProps = useRef()

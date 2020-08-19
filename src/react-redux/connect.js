@@ -67,9 +67,7 @@ export default function wrapWithConnect(WrappedComponent) {
 
 
 
-    const actualChildProps;
-    if (childPropsFromStoreUpdate.current && props === lastWrapperProps.current) actualChildProps = childPropsFromStoreUpdate.current;
-    else actualChildProps = childPropsSelector(store.getState(), props)
+    const actualChildProps = childPropsFromStoreUpdate.current && props === lastWrapperProps.current ? actualChildProps = childPropsFromStoreUpdate.current : actualChildProps = childPropsSelector(store.getState(), props)
 
 
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs])

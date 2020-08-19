@@ -1,7 +1,9 @@
 import hoistStatics from 'hoist-non-react-statics'
 import React, { useContext, useMemo, useRef, useReducer } from 'react'
+import { isContextConsumer } from 'react-is'
 import Subscription from './Subscription'
 import { useLayoutEffect } from 'react'
+import Context from './Context'
 import selectorFactory from './selectorFactory'
 
 function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {

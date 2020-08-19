@@ -8,14 +8,13 @@ export default function Provider({ store, children }) {
     subscription.onStateChange = subscription.notifyNestedSubs
     return { store, subscription }
   }, [store])
-  const previousState = store.getState()
   useEffect(() => {
     contextValue.subscription.trySubscribe()
-    if (previousState !== store.getState()) contextValue.subscription.notifyNestedSubs();
+    if (store.getState() !== store.getState()) contextValue.subscription.notifyNestedSubs();
     return () => {
       contextValue.subscription.tryUnsubscribe()
       contextValue.subscription.onStateChange = null
     }
-  }, [store, contextValue, previousState])
+  }, [store, contextValue])
   return <Context.Provider value={contextValue}>{children}</Context.Provider>
 }

@@ -3,11 +3,9 @@ import Context from './Context'
 import Subscription from './Subscription'
 
 export default function Provider({ store, children }) {
-  const contextValue = useMemo(() => {
-    const subscription = new Subscription(store)
-    subscription.onStateChange = subscription.notifyNestedSubs
-    return { store, subscription }
-  }, [store])
+  const subscription = new Subscription(store)
+  subscription.onStateChange = subscription.notifyNestedSubs
+  const contextValue = { store, subscription }
   useEffect(() => {
     contextValue.subscription.trySubscribe()
     return () => {

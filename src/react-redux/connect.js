@@ -5,9 +5,7 @@ import { useLayoutEffect } from 'react'
 import Context from './Context'
 import selectorFactory from './selectorFactory'
 
-function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
-  useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])
-}
+const useIsomorphicLayoutEffectWithArgs = (effectFunc, effectArgs, dependencies) => useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])
 
 function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs) {
   lastWrapperProps.current = wrapperProps
@@ -60,7 +58,7 @@ export default function wrapWithConnect(WrappedComponent) {
       const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
       return [subscription, notifyNestedSubs]
     }, [store, contextValue])
-    const overriddenContextValue = useMemo(() => ({ ...contextValue, subscription }), [contextValue, subscription])
+    const overriddenContextValue = ({ ...contextValue, subscription })
 
     const [previousStateUpdateResult, forceComponentUpdateDispatch] = useReducer((state, action) => action.payload, null)
     const lastChildProps = useRef()
@@ -82,9 +80,7 @@ export default function wrapWithConnect(WrappedComponent) {
     )
 
     const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])
-    const renderedChild = useMemo(() => {
-      return (<Context.Provider value={overriddenContextValue}>{renderedWrappedComponent}</Context.Provider>)
-    }, [renderedWrappedComponent, overriddenContextValue])
+    const renderedChild = useMemo(() => <Context.Provider value={overriddenContextValue}>{renderedWrappedComponent}</Context.Provider>, [renderedWrappedComponent, overriddenContextValue])
     return renderedChild
 
   }

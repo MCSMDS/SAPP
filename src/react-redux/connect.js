@@ -30,29 +30,18 @@ export default function wrapWithConnect(WrappedComponent) {
     childPropsFromStoreUpdate.current = null;
     notifyNestedSubs();
 
-
     useLayoutEffect(() => {
-      let didUnsubscribe = false;
       const checkForUpdates = () => {
-        if (didUnsubscribe) return;
-        let newChildProps = childPropsSelector(
-          store.getState(),
-          lastWrapperProps.current
-        );
-        if (newChildProps === lastChildProps.current) {
-          if (!renderIsScheduled.current) notifyNestedSubs();
-        } else {
-          lastChildProps.current = newChildProps;
-          childPropsFromStoreUpdate.current = newChildProps;
-          renderIsScheduled.current = true;
-          forceComponentUpdateDispatch({ type: "STORE_UPDATED", payload: {} });
-        }
+        let newChildProps = childPropsSelector(store.getState(), lastWrapperProps.current);
+        lastChildProps.current = newChildProps;
+        childPropsFromStoreUpdate.current = newChildProps;
+        renderIsScheduled.current = true;
+        forceComponentUpdateDispatch({ type: "STORE_UPDATED", payload: {} });
       };
       subscription.onStateChange = checkForUpdates;
       subscription.trySubscribe();
       checkForUpdates();
       return () => {
-        didUnsubscribe = true;
         subscription.tryUnsubscribe();
         subscription.onStateChange = null;
       };

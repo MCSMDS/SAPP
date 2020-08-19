@@ -48,7 +48,7 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
 
 
 export default function wrapWithConnect(WrappedComponent) {
-  //const usePureOnlyMemo = useMemo
+  const usePureOnlyMemo = useMemo
 
   function ConnectFunction(props) {
     const wrapperProps = useMemo(() => props, [props])
@@ -70,7 +70,7 @@ export default function wrapWithConnect(WrappedComponent) {
     const childPropsFromStoreUpdate = useRef()
     const renderIsScheduled = useRef(false)
 
-    const actualChildProps = useMemo(() => {
+    const actualChildProps = usePureOnlyMemo(() => {
       if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
       return childPropsSelector(contextValue.store.getState(), wrapperProps)
     }, [contextValue.store, previousStateUpdateResult, wrapperProps])

@@ -28,7 +28,6 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
     if (newChildProps === lastChildProps.current) {
       if (!renderIsScheduled.current) notifyNestedSubs()
     } else {
-      console.log(1111)
       lastChildProps.current = newChildProps
       childPropsFromStoreUpdate.current = newChildProps
       renderIsScheduled.current = true
@@ -53,12 +52,14 @@ export default function wrapWithConnect(WrappedComponent) {
 
   function ConnectFunction(props) {
     const wrapperProps = useMemo(() => props, [props])
+    console.log(wrapperProps)
     const contextValue = useContext(Context)
     const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)
-    console.log(didStoreComeFromProps)
     const store = didStoreComeFromProps ? props.store : contextValue.store
 
-    const childPropsSelector = useMemo(() => selectorFactory(store.dispatch), [store])
+    const childPropsSelector = useMemo(() => {
+      return selectorFactory(store.dispatch)
+    }, [store])
     const [subscription, notifyNestedSubs] = useMemo(() => {
       const subscription = new Subscription(store, didStoreComeFromProps ? null : contextValue.subscription)
       const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
@@ -70,6 +71,7 @@ export default function wrapWithConnect(WrappedComponent) {
     }, [didStoreComeFromProps, contextValue, subscription])
 
     const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer((state, action) => [action.payload, state[1] + 1], [], () => [null, 0])
+    if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
     const lastChildProps = useRef()
     const lastWrapperProps = useRef(wrapperProps)
     const childPropsFromStoreUpdate = useRef()
@@ -78,7 +80,7 @@ export default function wrapWithConnect(WrappedComponent) {
     const actualChildProps = usePureOnlyMemo(() => {
       if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
       return childPropsSelector(store.getState(), wrapperProps)
-    }, [store, wrapperProps])
+    }, [store, previousStateUpdateResult, wrapperProps])
 
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
       [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]

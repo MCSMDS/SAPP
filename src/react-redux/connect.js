@@ -40,7 +40,7 @@ export default function wrapWithConnect(WrappedComponent) {
       };
       subscription.onStateChange = checkForUpdates;
       subscription.trySubscribe();
-      checkForUpdates();
+      //checkForUpdates();
       return () => {
         subscription.tryUnsubscribe();
         subscription.onStateChange = null;

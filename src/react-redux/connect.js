@@ -52,6 +52,7 @@ export default function wrapWithConnect(WrappedComponent) {
   const usePureOnlyMemo = useMemo
 
   function ConnectFunction(props) {
+    console.log(props)
     const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
       const { reactReduxForwardedRef, ...wrapperProps } = props
       return [props.context, reactReduxForwardedRef, wrapperProps]

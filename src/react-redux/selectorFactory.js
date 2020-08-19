@@ -4,8 +4,8 @@ export default function pureFinalPropsSelectorFactory(dispatch) {
   const mapDispatchToProps = dispatch => ({ setStorage: (key, value) => dispatch({ type: key, value }) })
 
   function shallowEqual(objA, objB) {
+    console.log(objA, objB)
     if (objA === objB) return true;
-    console.log(1)
     if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) return false;
     const keysA = Object.keys(objA);
     const keysB = Object.keys(objB);

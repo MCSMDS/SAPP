@@ -1,8 +1,8 @@
 import React, { useMemo, useEffect } from 'react'
-import ReactReduxContext from './Context'
+import Context from './Context'
 import Subscription from './Subscription'
 
-export default function Provider({ store, context, children }) {
+export default function Provider({ store, children }) {
   const contextValue = useMemo(() => {
     const subscription = new Subscription(store)
     subscription.onStateChange = subscription.notifyNestedSubs
@@ -17,6 +17,5 @@ export default function Provider({ store, context, children }) {
       contextValue.subscription.onStateChange = null
     }
   }, [store, contextValue, previousState])
-  const Context = context || ReactReduxContext
   return <Context.Provider value={contextValue}>{children}</Context.Provider>
 }

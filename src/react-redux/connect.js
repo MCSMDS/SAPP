@@ -51,11 +51,9 @@ export default function wrapWithConnect(WrappedComponent) {
   const usePureOnlyMemo = useMemo
 
   function ConnectFunction(props) {
-
     const wrapperProps = useMemo(() => props, [props])
-    const ContextToUse = useMemo(() => Context, [])
-
-    const contextValue = useContext(ContextToUse)
+    console.log(wrapperProps)
+    const contextValue = useContext(Context)
     const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)
     const store = didStoreComeFromProps ? props.store : contextValue.store
 
@@ -94,7 +92,7 @@ export default function wrapWithConnect(WrappedComponent) {
 
     const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])
     const renderedChild = useMemo(() => {
-      return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
+      return (<Context.Provider value={overriddenContextValue}>{renderedWrappedComponent}</Context.Provider>)
     }, [renderedWrappedComponent, overriddenContextValue])
     return renderedChild
 

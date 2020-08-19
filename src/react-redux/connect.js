@@ -58,7 +58,6 @@ export default function wrapWithConnect(WrappedComponent) {
       const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
       return [subscription, notifyNestedSubs]
     }, [store, contextValue])
-    const overriddenContextValue = ({ ...contextValue, subscription })
 
     const [previousStateUpdateResult, forceComponentUpdateDispatch] = useReducer((state, action) => action.payload, null)
     const lastChildProps = useRef()
@@ -71,16 +70,11 @@ export default function wrapWithConnect(WrappedComponent) {
       return childPropsSelector(store.getState(), props)
     }, [store, previousStateUpdateResult, props])
 
-    useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
-      [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]
-    )
-    useIsomorphicLayoutEffectWithArgs(subscribeUpdates,
-      [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch],
-      [store, subscription, childPropsSelector]
-    )
+    useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs])
+    useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector])
 
     const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])
-    const renderedChild = useMemo(() => <Context.Provider value={overriddenContextValue}>{renderedWrappedComponent}</Context.Provider>, [renderedWrappedComponent, overriddenContextValue])
+    const renderedChild = useMemo(() => <Context.Provider value={{ ...contextValue, subscription }}>{renderedWrappedComponent}</Context.Provider>, [renderedWrappedComponent])
     return renderedChild
 
   }

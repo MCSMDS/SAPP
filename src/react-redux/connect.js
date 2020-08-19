@@ -4,7 +4,7 @@ import Subscription from './Subscription'
 import Context from './Context'
 import selectorFactory from './selectorFactory'
 
-const runFun = (effectFunc, effectArgs, dependencies) => useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])
+const useIsomorphicLayoutEffectWithArgs = (effectFunc, effectArgs, dependencies) => useLayoutEffect(() => effectFunc(...effectArgs), [effectFunc, effectArgs, dependencies])
 
 function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs) {
   lastWrapperProps.current = wrapperProps
@@ -65,8 +65,8 @@ export default function wrapWithConnect(WrappedComponent) {
       return childPropsSelector(store.getState(), props)
     }, [store, previousStateUpdateResult, props])
 
-    runFun(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs])
-    runFun(subscribeUpdates, [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector])
+    useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs])
+    useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector])
 
     return <Context.Provider value={{ ...contextValue, subscription }}><WrappedComponent {...actualChildProps} /></Context.Provider>
   }

@@ -52,9 +52,9 @@ export default function wrapWithConnect(WrappedComponent) {
 
   function ConnectFunction(props) {
     const wrapperProps = useMemo(() => props, [props])
-    console.log(wrapperProps)
     const contextValue = useContext(Context)
     const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)
+    console.log(didStoreComeFromProps)
     const store = didStoreComeFromProps ? props.store : contextValue.store
 
     const childPropsSelector = useMemo(() => selectorFactory(store.dispatch), [store])
@@ -68,7 +68,7 @@ export default function wrapWithConnect(WrappedComponent) {
       return { ...contextValue, subscription }
     }, [didStoreComeFromProps, contextValue, subscription])
 
-    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer((state, action) => [action.payload], [], () => [null])
+    const [previousStateUpdateResult, forceComponentUpdateDispatch] = useReducer((state, action) => action.payload, null)
     if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error
     const lastChildProps = useRef()
     const lastWrapperProps = useRef(wrapperProps)
@@ -78,7 +78,7 @@ export default function wrapWithConnect(WrappedComponent) {
     const actualChildProps = usePureOnlyMemo(() => {
       if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
       return childPropsSelector(store.getState(), wrapperProps)
-    }, [store, previousStateUpdateResult, wrapperProps])
+    }, [store, wrapperProps])
 
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
       [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]

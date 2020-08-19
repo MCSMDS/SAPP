@@ -74,7 +74,7 @@ export default function wrapWithConnect(WrappedComponent) {
     useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector])
 
     const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])
-    const renderedChild = useMemo(() => <Context.Provider value={{ ...contextValue, subscription }}>{renderedWrappedComponent}</Context.Provider>, [renderedWrappedComponent])
+    const renderedChild = useMemo(() => <Context.Provider value={{ ...contextValue, subscription }}>{renderedWrappedComponent}</Context.Provider>, [renderedWrappedComponent, contextValue, subscription])
     return renderedChild
 
   }

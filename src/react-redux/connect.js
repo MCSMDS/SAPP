@@ -69,7 +69,7 @@ export default function wrapWithConnect(WrappedComponent) {
       return { ...contextValue, subscription }
     }, [didStoreComeFromProps, contextValue, subscription])
 
-    const [, forceComponentUpdateDispatch] = useReducer((state, action) => [action.payload, state[1] + 1], [], () => [null, 0])
+    const [[previousStateUpdateResult], forceComponentUpdateDispatch] = useReducer((state, action) => [action.payload, state[1] + 1], [], () => [null, 0])
     const lastChildProps = useRef()
     const lastWrapperProps = useRef(wrapperProps)
     const childPropsFromStoreUpdate = useRef()

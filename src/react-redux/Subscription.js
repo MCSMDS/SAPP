@@ -20,16 +20,6 @@ function createListenerCollection() {
       })
     },
 
-    get() {
-      let listeners = []
-      let listener = first
-      while (listener) {
-        listeners.push(listener)
-        listener = listener.next
-      }
-      return listeners
-    },
-
     subscribe(callback) {
       let isSubscribed = true
       let listener = (last = { callback, next: null, prev: last })

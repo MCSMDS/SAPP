@@ -10,7 +10,9 @@ function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled
   lastWrapperProps.current = wrapperProps
   lastChildProps.current = actualChildProps
   renderIsScheduled.current = false
+
   if (childPropsFromStoreUpdate.current) {
+    console.log(1)
     childPropsFromStoreUpdate.current = null
     notifyNestedSubs()
   }
@@ -34,13 +36,11 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
   subscription.onStateChange = checkForUpdates
   subscription.trySubscribe()
   checkForUpdates()
-  const unsubscribeWrapper = () => {
-    console.log(111111111111111111111111111111)
+  return () => {
     didUnsubscribe = true
     subscription.tryUnsubscribe()
     subscription.onStateChange = null
   }
-  return unsubscribeWrapper
 }
 
 

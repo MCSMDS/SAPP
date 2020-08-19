@@ -51,10 +51,11 @@ export default function wrapWithConnect(WrappedComponent) {
   const usePureOnlyMemo = useMemo
 
   function ConnectFunction(props) {
+    const wrapperProps = props
     const contextValue = useContext(Context)
     const store = contextValue.store
 
-    const childPropsSelector = selectorFactory(store.dispatch)
+    const childPropsSelector = useMemo(() => selectorFactory(store.dispatch), [store])
     const [subscription, notifyNestedSubs] = useMemo(() => {
       const subscription = new Subscription(store, contextValue.subscription)
       const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
@@ -64,17 +65,17 @@ export default function wrapWithConnect(WrappedComponent) {
 
     const [previousStateUpdateResult, forceComponentUpdateDispatch] = useReducer((state, action) => action.payload, null)
     const lastChildProps = useRef()
-    const lastWrapperProps = useRef(props)
+    const lastWrapperProps = useRef(wrapperProps)
     const childPropsFromStoreUpdate = useRef()
     const renderIsScheduled = useRef(false)
 
     const actualChildProps = usePureOnlyMemo(() => {
-      if (childPropsFromStoreUpdate.current && props === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
-      return childPropsSelector(store.getState(), props)
-    }, [store, previousStateUpdateResult, props])
+      if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
+      return childPropsSelector(store.getState(), wrapperProps)
+    }, [store, previousStateUpdateResult, wrapperProps])
 
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
-      [lastWrapperProps, lastChildProps, renderIsScheduled, props, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]
+      [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]
     )
     useIsomorphicLayoutEffectWithArgs(subscribeUpdates,
       [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch],

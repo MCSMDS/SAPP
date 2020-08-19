@@ -48,18 +48,19 @@ function subscribeUpdates(store, subscription, childPropsSelector, lastWrapperPr
 
 
 export default function wrapWithConnect(WrappedComponent) {
-  //const usePureOnlyMemo = useMemo
+  const usePureOnlyMemo = useMemo
 
   function ConnectFunction(props) {
     const wrapperProps = useMemo(() => props, [props])
     const contextValue = useContext(Context)
+    const store = contextValue.store
 
-    const childPropsSelector = useMemo(() => selectorFactory(contextValue.store.dispatch), [contextValue.store])
+    const childPropsSelector = useMemo(() => selectorFactory(store.dispatch), [store])
     const [subscription, notifyNestedSubs] = useMemo(() => {
-      const subscription = new Subscription(contextValue.store, contextValue.subscription)
+      const subscription = new Subscription(store, contextValue.subscription)
       const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
       return [subscription, notifyNestedSubs]
-    }, [contextValue.store, contextValue])
+    }, [store, contextValue])
     const overriddenContextValue = useMemo(() => {
       return { ...contextValue, subscription }
     }, [contextValue, subscription])
@@ -70,17 +71,17 @@ export default function wrapWithConnect(WrappedComponent) {
     const childPropsFromStoreUpdate = useRef()
     const renderIsScheduled = useRef(false)
 
-    const actualChildProps = useMemo(() => {
+    const actualChildProps = usePureOnlyMemo(() => {
       if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
-      return childPropsSelector(contextValue.store.getState(), wrapperProps)
-    }, [contextValue.store, previousStateUpdateResult, wrapperProps])
+      return childPropsSelector(store.getState(), wrapperProps)
+    }, [store, previousStateUpdateResult, wrapperProps])
 
     useIsomorphicLayoutEffectWithArgs(captureWrapperProps,
       [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]
     )
     useIsomorphicLayoutEffectWithArgs(subscribeUpdates,
-      [contextValue.store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch],
-      [contextValue.store, subscription, childPropsSelector]
+      [store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch],
+      [store, subscription, childPropsSelector]
     )
 
     const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])

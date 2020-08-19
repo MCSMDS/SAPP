@@ -24,13 +24,12 @@ export default function wrapWithConnect(WrappedComponent) {
       return childPropsSelector(store.getState(), props);
     }, [store, previousStateUpdateResult, props]);
 
-    useLayoutEffect(() => {
-      lastWrapperProps.current = props;
-      lastChildProps.current = actualChildProps;
-      renderIsScheduled.current = false;
-      childPropsFromStoreUpdate.current = null;
-      notifyNestedSubs();
-    });
+    lastWrapperProps.current = props;
+    lastChildProps.current = actualChildProps;
+    renderIsScheduled.current = false;
+    childPropsFromStoreUpdate.current = null;
+    notifyNestedSubs();
+
 
     useLayoutEffect(() => {
       let didUnsubscribe = false;

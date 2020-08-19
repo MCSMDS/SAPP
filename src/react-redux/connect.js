@@ -11,7 +11,6 @@ function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled
   lastChildProps.current = actualChildProps
   renderIsScheduled.current = false
   if (childPropsFromStoreUpdate.current) {
-    console.log(1)
     childPropsFromStoreUpdate.current = null
     notifyNestedSubs()
   }
@@ -71,7 +70,5 @@ export default function wrapWithConnect(WrappedComponent) {
     return <Context.Provider value={{ ...contextValue, subscription }}><WrappedComponent {...actualChildProps} /></Context.Provider>
   }
 
-  const Connect = React.memo(ConnectFunction)
-  //Connect.WrappedComponent = WrappedComponent
-  return hoistStatics(Connect, WrappedComponent)
+  return hoistStatics(React.memo(ConnectFunction), WrappedComponent)
 }

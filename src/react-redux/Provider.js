@@ -8,7 +8,7 @@ export default function Provider({ store, children }) {
     subscription.onStateChange = subscription.notifyNestedSubs
     return { store, subscription }
   }, [store])
-  const previousState = useMemo(() => store.getState(), [store])
+  const previousState = store.getState()
   useEffect(() => {
     contextValue.subscription.trySubscribe()
     if (previousState !== store.getState()) contextValue.subscription.notifyNestedSubs();

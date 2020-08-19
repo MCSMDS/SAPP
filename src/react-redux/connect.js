@@ -1,6 +1,5 @@
 import hoistStatics from 'hoist-non-react-statics'
 import React, { useContext, useMemo, useRef, useReducer } from 'react'
-import { isContextConsumer } from 'react-is'
 import Subscription from './Subscription'
 import { useLayoutEffect } from 'react'
 import Context from './Context'
@@ -53,14 +52,8 @@ export default function wrapWithConnect(WrappedComponent) {
 
   function ConnectFunction(props) {
 
-    const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
-      const { reactReduxForwardedRef, ...wrapperProps } = props
-      return [props.context, reactReduxForwardedRef, wrapperProps]
-    }, [props])
-    console.log(propsContext, reactReduxForwardedRef)
-    const ContextToUse = useMemo(() => {
-      return propsContext && propsContext.Consumer && isContextConsumer(<propsContext.Consumer />) ? propsContext : Context
-    }, [propsContext])
+    const wrapperProps = useMemo(() => props, [props])
+    const ContextToUse = useMemo(() => Context, [])
 
     const contextValue = useContext(ContextToUse)
     const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)
@@ -99,7 +92,7 @@ export default function wrapWithConnect(WrappedComponent) {
       [store, subscription, childPropsSelector]
     )
 
-    const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} ref={reactReduxForwardedRef} />), [reactReduxForwardedRef, actualChildProps])
+    const renderedWrappedComponent = useMemo(() => (<WrappedComponent {...actualChildProps} />), [actualChildProps])
     const renderedChild = useMemo(() => {
       return (<ContextToUse.Provider value={overriddenContextValue}>{renderedWrappedComponent}</ContextToUse.Provider>)
     }, [renderedWrappedComponent, overriddenContextValue])

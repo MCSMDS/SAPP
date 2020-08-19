@@ -53,10 +53,14 @@ export default function wrapWithConnect(WrappedComponent) {
 
   function ConnectFunction(props) {
 
-    const wrapperProps = useMemo(() => props, [props]);
-    console.log(wrapperProps)
-
-    const ContextToUse = useMemo(() => undefined, [])
+    const [propsContext, reactReduxForwardedRef, wrapperProps] = useMemo(() => {
+      const { reactReduxForwardedRef, ...wrapperProps } = props
+      return [props.context, reactReduxForwardedRef, wrapperProps]
+    }, [props])
+    console.log(propsContext, reactReduxForwardedRef)
+    const ContextToUse = useMemo(() => {
+      return propsContext && propsContext.Consumer && isContextConsumer(<propsContext.Consumer />) ? propsContext : Context
+    }, [propsContext])
 
     const contextValue = useContext(ContextToUse)
     const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)

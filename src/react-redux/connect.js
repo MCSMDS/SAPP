@@ -53,20 +53,17 @@ export default function wrapWithConnect(WrappedComponent) {
   function ConnectFunction(props) {
     const wrapperProps = useMemo(() => props, [props])
     const contextValue = useContext(Context)
-    const didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch)
-    console.log(didStoreComeFromProps)
-    const store = didStoreComeFromProps ? props.store : contextValue.store
+    const store = contextValue.store
 
     const childPropsSelector = useMemo(() => selectorFactory(store.dispatch), [store])
     const [subscription, notifyNestedSubs] = useMemo(() => {
-      const subscription = new Subscription(store, didStoreComeFromProps ? null : contextValue.subscription)
+      const subscription = new Subscription(store, contextValue.subscription)
       const notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription)
       return [subscription, notifyNestedSubs]
-    }, [store, didStoreComeFromProps, contextValue])
+    }, [store, contextValue])
     const overriddenContextValue = useMemo(() => {
-      if (didStoreComeFromProps) return contextValue
       return { ...contextValue, subscription }
-    }, [didStoreComeFromProps, contextValue, subscription])
+    }, [contextValue, subscription])
 
     const [previousStateUpdateResult, forceComponentUpdateDispatch] = useReducer((state, action) => action.payload, null)
     const lastChildProps = useRef()

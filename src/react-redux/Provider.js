@@ -13,5 +13,5 @@ export default function Provider({ store, children }) {
       contextValue.subscription.onStateChange = null
     }
   }, [store, contextValue])
-  return <Context.Provider value={contextValue}>{children}</Context.Provider>
+  return <Context.Provider value={{ store, subscription }}>{children}</Context.Provider>
 }

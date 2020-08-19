@@ -11,6 +11,7 @@ export default function Provider({ store, children }) {
     return () => {
       contextValue.subscription.tryUnsubscribe()
       contextValue.subscription.onStateChange = null
+      console.log(1111111111)
     }
   }, [store, contextValue])
   return <Context.Provider value={{ store, subscription }}>{children}</Context.Provider>

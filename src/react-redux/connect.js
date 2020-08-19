@@ -72,6 +72,6 @@ export default function wrapWithConnect(WrappedComponent) {
   }
 
   const Connect = React.memo(ConnectFunction)
-  Connect.WrappedComponent = WrappedComponent
+  //Connect.WrappedComponent = WrappedComponent
   return hoistStatics(Connect, WrappedComponent)
 }
